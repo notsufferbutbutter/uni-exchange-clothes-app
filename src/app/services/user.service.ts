@@ -12,7 +12,7 @@ export class UserService {
     async registerProfileUser(email: string, id: string) {
         const { error } = await supabase
         .from('users')
-        .insert({ user_id: id, email: email })
+        .insert({ user_id: id, email: email, username: email, created_at: new Date().toISOString() })
 
         if(error) console.error('Error registering profile user', error);
     }
