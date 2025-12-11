@@ -1,0 +1,129 @@
+@import "@angular/cdk/overlay-prebuilt.css";
+@import "@spartan-ng/brain/hlm-tailwind-preset.css";
+
+/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+
+:root {
+  color-scheme: light;
+  background-color: var(--background);
+
+  --font-sans: "";
+  --font-heading: "";
+
+  /* Base background */
+  --background: rgba(255, 246, 238, 1);
+  --foreground: oklch(0.26 0.05 173);
+
+  /* Cards & elevated surfaces */
+  --card: rgba(183, 241, 177, 0.4);
+  --card-foreground: oklch(0.26 0.05 173);
+
+  /* Popovers / Floating UIs (menu, dropdown) */
+  --popover: oklch(94.735% 0.02399 163.38);
+  --popover-foreground: oklch(0.26 0.05 173);
+
+  /* Primary Buttons / Links */
+  --primary: oklch(50.534% 0.09794 164.531);
+  --primary-foreground: oklch(0.98 0.02 166);
+
+  /* Secondary Actions (Submit, Cancel, Learn more) */
+  --secondary: oklch(0.85 0.13 165);
+  --secondary-foreground: oklch(0.26 0.05 173);
+
+  /* Muted Text / Subtitles (metadata, placeholder of input) */
+  --muted: oklch(100% 0.00011 271.152);
+  --muted-foreground: oklch(42.512% 0.01883 176.359);
+
+  /* Accent (hovering button, link, icon) */
+  --accent: oklch(61.776% 0.06441 144.089);
+  --accent-foreground: oklch(0.98 0.02 166);
+
+  /* Destructive / Warning */
+  --destructive: oklch(0.6 0.13 20);
+  --destructive-foreground: oklch(0.98 0.02 166);
+
+  /* Borders, Inputs, Focus outlines */
+  --border: oklch(0.9 0.09 164 / 40%);
+  --input: oklch(90.581% 0.0695 162.147 / 0.4);
+  --ring: oklch(90.296% 0.12346 141.679);
+
+  /* Sidebar – slightly tinted to guide navigation */
+  --sidebar: oklch(0.95 0.05 163);
+  --sidebar-foreground: oklch(0.26 0.05 173);
+  --sidebar-primary: oklch(0.7 0.15 162);
+  --sidebar-primary-foreground: oklch(0.98 0.02 166);
+  --sidebar-accent: oklch(0.85 0.13 165);
+  --sidebar-accent-foreground: oklch(0.26 0.05 173);
+  --sidebar-border: oklch(0.9 0.09 164 / 40%);
+  --sidebar-ring: oklch(0.77 0.15 163);
+
+  --radius: 0.625rem;
+}
+
+:root.dark {
+  color-scheme: dark;
+
+  /* Background & Base Layer */
+  --background: oklch(0.26 0.05 173);
+  --foreground: oklch(0.98 0.02 166);
+
+  /* Cards & Surfaces */
+  --card: oklch(0.51 0.1 166);
+  --card-foreground: oklch(0.95 0.05 163);
+
+  /* Popovers / Floating UI */
+  --popover: oklch(0.6 0.13 163);
+  --popover-foreground: oklch(0.95 0.05 163);
+
+  /* Primary Actions
+     → strong, saturated focus color */
+  --primary: oklch(0.77 0.15 163);
+  --primary-foreground: oklch(0.98 0.02 166);
+
+  /* Secondary Elements
+     → softer supportive tone, less contrast */
+  --secondary: oklch(0.7 0.15 162);
+  --secondary-foreground: oklch(0.95 0.05 163);
+
+  /* Muted Text & Borders */
+  --muted: oklch(33.138% 0.0571 168.014);
+  --muted-foreground: oklch(0.85 0.13 165);
+
+  /* Accent,  highlight links, icons, or focus rings */
+  --accent: oklch(0.85 0.13 165);
+  --accent-foreground: oklch(0.98 0.02 166);
+
+  /* Destructive / Error */
+  --destructive: oklch(0.6 0.13 20);
+  --destructive-foreground: oklch(0.98 0.02 166);
+
+  /* Borders, Inputs, Rings */
+  --border: oklch(12.856% 0.00001 271.152 / 0.4);
+  --input: oklch(20.019% 0.00002 271.152 / 0.25);
+  --ring: oklch(0% 0 0);
+
+  /* Sidebar */
+  --sidebar: oklch(0.51 0.1 166);
+  --sidebar-foreground: oklch(0.95 0.05 163);
+  --sidebar-primary: oklch(0.77 0.15 163);
+  --sidebar-primary-foreground: oklch(0.98 0.02 166);
+  --sidebar-accent: oklch(0.7 0.15 162);
+  --sidebar-accent-foreground: oklch(0.98 0.02 166);
+  --sidebar-border: oklch(0.51 0.1 166 / 40%);
+  --sidebar-ring: oklch(0.85 0.13 165);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

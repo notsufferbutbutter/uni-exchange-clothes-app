@@ -1,0 +1,67 @@
+<div class="flex justify-center items-center min-h-screen pb-20">
+    <section class="w-full max-w-sm" hlmCard>
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+        <div hlmCardHeader>
+            <h3 hlmCardTitle>Create an account</h3>
+        </div>
+
+        <div hlmCardContent class="pt-3">
+            <div class="flex flex-col gap-6">
+                <div class="grid gap-2">
+                    <label hlmLabel for="email">Email</label>
+                    <input 
+                        formControlName="email" 
+                        type="email" 
+                        id="email" 
+                        placeholder="m@example.com" 
+                        required 
+                        hlmInput 
+                    />
+
+                    @if(email.hasError('required') && email.touched) {
+                        <hlm-error>Email is required</hlm-error>
+                    }
+                    @if(email.hasError('email') && email.touched) {
+                        <hlm-error>Email format is invalid</hlm-error>
+                    }
+                </div>
+
+                <div class="grid gap-2">
+                    <div class="flex items-center">
+                        <label hlmLabel for="password">Password</label>
+                    </div>
+                    
+                    <input formControlName="password" type="password" id="password" hlmInput />
+                    
+                    @if (password.hasError('required') && password.touched) {
+                        <hlm-error>Password is required</hlm-error>
+                    }
+                    @if (password.hasError('passwordStrength') && password.touched) {
+                        <hlm-error>Password is between 8-16 characters, requires at least one uppercase, one lowercase, one number and one special character (! &#64; # $ % ^ & *)</hlm-error>
+                    }
+                    @if (password.hasError('containsEmailName') && password.touched) {
+                        <hlm-error>Password cannot include your email name</hlm-error>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (succeededMessage()) {
+            <div class="mt-4 mb-2 rounded-lg px-4 py-3 text-center space-y-1">
+                <p class="font-semibold">{{ succeededMessage() }}</p>
+                <p class="text-sm">You can go back to <a class="underline underline-offset-4 hover:text-green-800" routerLink="/">homepage</a></p>
+            </div>
+        }
+        @if (errorMessage()) {
+            <hlm-error class="mt-4 mb-2 rounded-lg px-4 py-3 text-center">{{ errorMessage() || 'Please try again!' }}</hlm-error>
+        }
+
+        <div hlmCardFooter class="flex-col gap-2 mt-3">
+            <button hlmBtn type="submit" class="w-full">Create an account</button>
+            <a routerLink="/login" class="text-base underline-offset-4 hover:underline">Already have an account?</a>
+        </div>
+        </form>
+    </section>
+
+
+</div>

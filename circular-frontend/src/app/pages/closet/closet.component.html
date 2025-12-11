@@ -1,0 +1,137 @@
+<app-navbar />
+
+<main class="pt-20 px-4">
+
+
+
+<h2 class="text-3xl font-bold text-center">Mein Schrank</h2>
+<div class="flex justify-end mr-10 pb-5">
+    <button id="add-article" (click)="onAddArticle()" hlmBtn>Artikel hinzufügen</button>
+</div>
+
+<hlm-dialog [state]="dialogState()" (stateChange)="onDialogStateChange($event)">
+    <hlm-dialog-content class="w-150 mx-auto" *brnDialogContent="let ctx">
+        <hlm-dialog-header>
+            <h3 hlmDialogTitle>{{ editingItem() ? 'Artikel bearbeiten' : 'Neuen Artikel hinzufügen' }}</h3>
+        </hlm-dialog-header>
+
+        <form [formGroup]="addItemForm" (ngSubmit)="onSave()">
+            <div hlmFieldGroup #itemForm>
+                <div class="grid grid-cols-2 gap-2">
+                    <div hlmField>
+                        <label hlmFieldLabel for="name">Name</label>
+                        <input hlmInput placeholder="z.B. Schwarzes Kleid" id="name" formControlName="name">
+                    </div>
+
+                    <div hlmField>
+                        <label hlmFieldLabel for="brand">Marke</label>
+                        <input hlmInput placeholder="z.B. Zara" id="brand" formControlName="brand">
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-2">
+                    <div hlmField>
+                        <label for="category">Kategorie</label>
+                        <brn-select id="category" class="inline-block" placeholder="Wählen" formControlName="category">
+                            <hlm-select-trigger>
+                                <hlm-select-value />
+                            </hlm-select-trigger>
+                            
+                            <hlm-select-content>
+                                <hlm-option value="Hosen">Hosen</hlm-option>
+                                <hlm-option value="Hoodies">Hoodies</hlm-option>
+                                <hlm-option value="T-Shirts">T-Shirts</hlm-option>
+                                <hlm-option value="Jacken">Jacken</hlm-option>
+                                <hlm-option value="Hemden">Hemden</hlm-option>
+                                <hlm-option value="Shorts">Shorts</hlm-option>
+                                <hlm-option value="Kleider">Kleider</hlm-option>
+                            </hlm-select-content>
+                        </brn-select>
+                    </div>
+
+                    <div hlmField>
+                        <label for="size">Größe</label>
+                        <brn-select id="size" class="inline-block" placeholder="Wählen" formControlName="size">
+                            <hlm-select-trigger>
+                                <hlm-select-value />
+                            </hlm-select-trigger>
+
+                            <hlm-select-content>
+                                <hlm-option value="XS">XS</hlm-option>
+                                <hlm-option value="S">S</hlm-option>
+                                <hlm-option value="3">M</hlm-option>
+                                <hlm-option value="L">L</hlm-option>
+                                <hlm-option value="XL">XL</hlm-option>
+                                <hlm-option value="XXL">XXL</hlm-option>
+                                <hlm-option value="XXXL">XXXL</hlm-option>
+                                <hlm-option value="One Size">One Size</hlm-option>
+                            </hlm-select-content>
+                        </brn-select>
+                    </div>
+
+                    <div hlmField>
+                        <label for="condition">Zustand</label>
+                        <brn-select id="condition" class="inline-block" placeholder="Wählen" formControlName="condition">
+                            <hlm-select-trigger>
+                                <hlm-select-value />
+                            </hlm-select-trigger>
+
+                            <hlm-select-content>
+                                <hlm-option value="New">New</hlm-option>
+                                <hlm-option value="Like New">Like New</hlm-option>
+                                <hlm-option value="Gently Used">Gently Used</hlm-option>
+                                <hlm-option value="Worn">Worn</hlm-option>
+                                <hlm-option value="Damaged">Damaged</hlm-option>
+                                <hlm-option value="Vintage">Vintage</hlm-option>
+                                <hlm-option value="Refurbished">Refurbished</hlm-option>
+                                <hlm-option value="Customized">Customized</hlm-option>
+                            </hlm-select-content>
+                        </brn-select>
+                    </div>
+                </div>
+
+                <div hlmField>
+                    <label hlmFieldLabel class="inline-block" for="price">Preis</label>
+                    <input hlmInput placeholder="in €" id="price" formControlName="price">
+                </div>
+
+                <div hlmField>
+                    <label hlmFieldLabel class="inline-block" for="color">Farbe</label>
+                    <input hlmInput placeholder="z.B. Schwarz" id="color" formControlName="color">
+                </div>
+
+                <div hlmField>
+                    <label hlmFieldLabel for="description">Beschreibung</label>
+                    <textarea hlmTextarea class="border border-input resize-none" id="description" formControlName="description"></textarea>
+                </div>
+
+                <div hlmField>
+                    <label hlmLabel for="picture">Upload file</label>
+                    <input hlmInput class="w-80 h-20" id="picture" type="file"  formControlName="images" multiple (change)="onFileSelected($event)"/>
+                </div>
+            </div>
+
+            <hlm-dialog-footer class="mt-3">
+                <button hlmBtn variant="outline" type="button" (click)="onCancel()">Cancel</button>
+                <button hlmBtn type="submit" [disabled]="editingItem() ? (!hasUnsavedChanges() || addItemForm.invalid) : addItemForm.invalid">
+                    {{ editingItem() ? 'Änderungen speichern' : 'Artikel speichern' }}
+                </button>
+            </hlm-dialog-footer>
+        </form>
+    </hlm-dialog-content>
+</hlm-dialog>
+
+@if (items().length === 0) {
+    <div class="flex items-center justify-center h-72 bg-white rounded-2xl m-10">
+            <div class="absolute text-center text-neutral-500 text-base font-normal font-['Inter'] leading-6">Du hast noch keine Artikel.</div>
+    </div>
+}
+
+<div
+  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+>
+    @for (item of items(); track item.id) {
+    <app-closet-item [item]="item" (isEditClick)="onEdit(item)"></app-closet-item>
+  }
+</div>
+</main>

@@ -1,0 +1,35 @@
+<h2 class="text-3xl font-bold text-center">HEADLINES</h2>
+
+<section class="w-full flex flex-col items-center">
+  <div class="flex w-full items-center justify-center p-4">
+    <hlm-carousel [options]="{ loop: true }" class="max-w-1/2" [plugins]="plugins">
+      <hlm-carousel-content>
+        @for (headline of headlines(); track headline.id) {
+          <hlm-carousel-item>
+            <div class="p-1">
+              <section
+                hlmCard
+                class="min-h-[500px] w-full rounded-xl border border-border/40 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+              >
+                <app-headline
+                  [headline]="headline"
+                  [headlineCount]="currentHeadline()"
+                  [headlinesTotal]="headlinesTotal()"
+                ></app-headline>
+              </section>
+            </div>
+          </hlm-carousel-item>
+        }
+      </hlm-carousel-content>
+      <button hlm-carousel-previous (click)="prev()"></button>
+      <button hlm-carousel-next (click)="next()"></button>
+    </hlm-carousel>
+  </div>
+
+  <a
+    routerLink="/articles"
+    class="mt-1 mb-5 gap-2 hover:text-primary transition justify-between underline"
+  >
+    Alle Artikel anzeigen
+  </a>
+</section>

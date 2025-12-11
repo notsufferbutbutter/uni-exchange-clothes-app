@@ -1,0 +1,262 @@
+<app-navbar />
+
+<main class="pt-20 px-4">
+  <h2 class="text-3xl font-bold text-center mb-6">Tauschangebote</h2>
+
+  <!-- Tabs -->
+  <div class="flex justify-center gap-4 mb-8">
+    <button
+      class="px-6 py-3 rounded-full"
+      [class.bg-[#8B9A7E]]="activeTab() === 'received'"
+      [class.text-white]="activeTab() === 'received'"
+      [class.bg-gray-200]="activeTab() !== 'received'"
+      (click)="activeTab.set('received')"
+    >
+      Erhalten ({{ receivedRequests().length }})
+    </button>
+    <button
+      class="px-6 py-3 rounded-full"
+      [class.bg-[#8B9A7E]]="activeTab() === 'sent'"
+      [class.text-white]="activeTab() === 'sent'"
+      [class.bg-gray-200]="activeTab() !== 'sent'"
+      (click)="activeTab.set('sent')"
+    >
+      Gesendet ({{ sentRequests().length }})
+    </button>
+    <button
+      class="px-6 py-3 rounded-full"
+      [class.bg-[#8B9A7E]]="activeTab() === 'successful'"
+      [class.text-white]="activeTab() === 'successful'"
+      [class.bg-gray-200]="activeTab() !== 'successful'"
+      (click)="activeTab.set('successful')"
+    >
+      Erfolgreich ({{ successfulTrades().length }})
+    </button>
+  </div>
+
+  <!-- Received Requests -->
+  @if (activeTab() === 'received') {
+    @if (receivedRequests().length === 0) {
+      <div class="flex items-center justify-center h-72 bg-white rounded-2xl m-10">
+        <div class="text-center text-neutral-500">Keine Anfragen erhalten.</div>
+      </div>
+    } @else {
+      <div class="space-y-4">
+        @for (request of receivedRequests(); track request.id) {
+          <section hlmCard class="p-6 bg-white shadow-md">
+            <div hlmCardHeader>
+              <h3 hlmCardTitle class="text-lg">Anfrage von {{ getUser(request.requesterId)?.email || 'Benutzer' }}</h3>
+              <p hlmCardDescription>{{ request.createdAt | date: 'short' }} · <span class="text-orange-600 font-semibold">{{ request.status }}</span></p>
+            </div>
+
+            <div hlmCardContent class="grid grid-cols-2 gap-4 mt-4">
+              <div class="border-r pr-4">
+                <h4 class="font-semibold mb-3 text-[#2c4c3b]">Bietet an:</h4>
+                @if (getItem(request.requestedArticleId); as requestedItem) {
+                  <div class="flex items-center gap-3 mb-3 p-2 bg-gray-50 rounded-lg">
+                    <img
+                      [src]="requestedItem.images[0]"
+                      alt="{{ requestedItem.title }}"
+                      class="w-20 h-20 object-cover rounded"
+                    />
+                    <div>
+                      <p class="font-medium">{{ requestedItem.title }}</p>
+                      <p class="text-sm text-gray-600">Größe: {{ requestedItem.size }}</p>
+                    </div>
+                  </div>
+                }
+              </div>
+
+              <div class="pl-4">
+                <h4 class="font-semibold mb-3 text-[#2c4c3b]">Möchte haben:</h4>
+                @for (offeredId of request.offeredArticleIds; track offeredId) {
+                  @if (getItem(offeredId); as offeredItem) {
+                    <div class="flex items-center gap-3 mb-3 p-2 bg-gray-50 rounded-lg">
+                      <img
+                        [src]="offeredItem.images[0]"
+                        alt="{{ offeredItem.title }}"
+                        class="w-20 h-20 object-cover rounded"
+                      />
+                      <div>
+                        <p class="font-medium">{{ offeredItem.title }}</p>
+                        <p class="text-sm text-gray-600">Größe: {{ offeredItem.size }}</p>
+                      </div>
+                    </div>
+                  }
+                }
+                @if (request.offeredArticleIds.length === 0) {
+                  <p class="text-sm text-gray-500 italic">Keine spezifischen Artikel angeboten</p>
+                }
+              </div>
+            </div>
+
+            @if (request.message) {
+              <div class="mt-4 p-3 bg-gray-50 rounded">
+                <p class="text-sm">{{ request.message }}</p>
+              </div>
+            }
+
+            <div hlmCardFooter class="flex justify-end gap-3 mt-4">
+              <button hlmBtn variant="outline" (click)="onReject(request)">
+                Ablehnen
+              </button>
+              <button hlmBtn class="bg-[#8B9A7E]" (click)="onAccept(request)">
+                Annehmen
+              </button>
+            </div>
+          </section>
+        }
+      </div>
+    }
+  }
+
+  <!-- Sent Requests -->
+  @if (activeTab() === 'sent') {
+    @if (sentRequests().length === 0) {
+      <div class="flex items-center justify-center h-72 bg-white rounded-2xl m-10">
+        <div class="text-center text-neutral-500">Keine Anfragen gesendet.</div>
+      </div>
+    } @else {
+      <div class="space-y-4">
+        @for (request of sentRequests(); track request.id) {
+          <section hlmCard class="p-6 bg-white shadow-md">
+            <div hlmCardHeader>
+              <h3 hlmCardTitle class="text-lg">Anfrage an {{ getUser(request.receiverId)?.email || 'Benutzer' }}</h3>
+              <p hlmCardDescription>
+                {{ request.createdAt | date: 'short' }} · 
+                <span [class.text-orange-600]="request.status === 'PENDING'"
+                      [class.text-green-600]="request.status === 'ACCEPTED'"
+                      [class.text-red-600]="request.status === 'REJECTED'"
+                      class="font-semibold">
+                  {{ request.status }}
+                </span>
+              </p>
+            </div>
+
+            <div hlmCardContent class="grid grid-cols-2 gap-4 mt-4">
+              <div class="border-r pr-4">
+                <h4 class="font-semibold mb-3 text-[#2c4c3b]">Du möchtest:</h4>
+                @if (getItem(request.requestedArticleId); as requestedItem) {
+                  <div class="flex items-center gap-3 p-2 bg-gray-50 rounded-lg">
+                    <img
+                      [src]="requestedItem.images[0]"
+                      alt="{{ requestedItem.title }}"
+                      class="w-20 h-20 object-cover rounded"
+                    />
+                    <div>
+                      <p class="font-medium">{{ requestedItem.title }}</p>
+                      <p class="text-sm text-gray-600">Größe: {{ requestedItem.size }}</p>
+                    </div>
+                  </div>
+                }
+              </div>
+
+              <div class="pl-4">
+                <h4 class="font-semibold mb-3 text-[#2c4c3b]">Du bietest:</h4>
+                @for (offeredId of request.offeredArticleIds; track offeredId) {
+                  @if (getItem(offeredId); as offeredItem) {
+                    <div class="flex items-center gap-3 mb-3 p-2 bg-gray-50 rounded-lg">
+                      <img
+                        [src]="offeredItem.images[0]"
+                        alt="{{ offeredItem.title }}"
+                        class="w-20 h-20 object-cover rounded"
+                      />
+                      <div>
+                        <p class="font-medium">{{ offeredItem.title }}</p>
+                        <p class="text-sm text-gray-600">Größe: {{ offeredItem.size }}</p>
+                      </div>
+                    </div>
+                  }
+                }
+              </div>
+            </div>
+          </section>
+        }
+      </div>
+    }
+  }
+
+  <!-- Successful Trades -->
+  @if (activeTab() === 'successful') {
+    @if (successfulTrades().length === 0) {
+      <div class="flex items-center justify-center h-72 bg-white rounded-2xl m-10">
+        <div class="text-center text-neutral-500">Noch keine erfolgreichen Tausche.</div>
+      </div>
+    } @else {
+      <div class="space-y-4">
+        @for (request of successfulTrades(); track request.id) {
+          <section hlmCard class="p-6 bg-green-50 border-2 border-green-200">
+            <div hlmCardHeader>
+              <h3 hlmCardTitle class="text-green-700">Erfolgreicher Tausch</h3>
+              <p hlmCardDescription>{{ request.updatedAt | date: 'short' }} · mit {{ getUser(request.requesterId === currentUserId ? request.receiverId : request.requesterId)?.email || 'Benutzer' }}</p>
+            </div>
+
+            <div hlmCardContent class="grid grid-cols-2 gap-6 mt-4">
+              <div>
+                <h4 class="font-semibold mb-3 text-[#2c4c3b] text-center">
+                  {{ request.requesterId === currentUserId ? 'Du hast bekommen' : 'Du hast gegeben' }}
+                </h4>
+                @if (request.requesterId === currentUserId) {
+                  @if (getItem(request.requestedArticleId); as requestedItem) {
+                    <div class="flex flex-col items-center gap-2 p-3 bg-white rounded-lg">
+                      <img
+                        [src]="requestedItem.images[0]"
+                        alt="{{ requestedItem.title }}"
+                        class="w-32 h-32 object-cover rounded"
+                      />
+                      <p class="font-medium text-center">{{ requestedItem.title }}</p>
+                    </div>
+                  }
+                } @else {
+                  @if (request.offeredArticleIds.length > 0) {
+                    @if (getItem(request.offeredArticleIds[0]); as offeredItem) {
+                      <div class="flex flex-col items-center gap-2 p-3 bg-white rounded-lg">
+                        <img
+                          [src]="offeredItem.images[0]"
+                          alt="{{ offeredItem.title }}"
+                          class="w-32 h-32 object-cover rounded"
+                        />
+                        <p class="font-medium text-center">{{ offeredItem.title }}</p>
+                      </div>
+                    }
+                  }
+                }
+              </div>
+
+              <div>
+                <h4 class="font-semibold mb-3 text-[#2c4c3b] text-center">
+                  {{ request.requesterId === currentUserId ? 'Du hast gegeben' : 'Du hast bekommen' }}
+                </h4>
+                @if (request.requesterId === currentUserId) {
+                  @if (request.offeredArticleIds.length > 0) {
+                    @if (getItem(request.offeredArticleIds[0]); as offeredItem) {
+                      <div class="flex flex-col items-center gap-2 p-3 bg-white rounded-lg">
+                        <img
+                          [src]="offeredItem.images[0]"
+                          alt="{{ offeredItem.title }}"
+                          class="w-32 h-32 object-cover rounded"
+                        />
+                        <p class="font-medium text-center">{{ offeredItem.title }}</p>
+                      </div>
+                    }
+                  }
+                } @else {
+                  @if (getItem(request.requestedArticleId); as requestedItem) {
+                    <div class="flex flex-col items-center gap-2 p-3 bg-white rounded-lg">
+                      <img
+                        [src]="requestedItem.images[0]"
+                        alt="{{ requestedItem.title }}"
+                        class="w-32 h-32 object-cover rounded"
+                      />
+                      <p class="font-medium text-center">{{ requestedItem.title }}</p>
+                    </div>
+                  }
+                }
+              </div>
+            </div>
+          </section>
+        }
+      </div>
+    }
+  }
+</main>

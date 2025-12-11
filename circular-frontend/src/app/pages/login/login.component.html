@@ -1,0 +1,53 @@
+<div class="flex justify-center items-center min-h-screen pb-20">
+    <section class="w-full max-w-sm" hlmCard>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div hlmCardHeader>
+            <h3 hlmCardTitle>Login to your account</h3>
+        </div>
+
+        <div hlmCardContent class="pt-3">
+                <div class="flex flex-col gap-6">
+                    <div class="grid gap-2">
+                        <label hlmLabel for="email">Email</label>
+                        <input 
+                            formControlName="email"
+                            type="email" 
+                            id="email" 
+                            placeholder="m@example.com" 
+                            required 
+                            hlmInput />
+
+                        @if (email.hasError('required') && email.touched) {
+                            <hlm-error>Email is required</hlm-error>
+                        }
+                        @if (email.hasError('email') && email.touched) {
+                            <hlm-error>Email format is invalid</hlm-error>
+                        }
+                    </div>
+
+                    <div class="grid gap-2">
+                        <div class="flex items-center">
+                            <label hlmLabel for="password">Password</label>
+                            <a href="#" class="ml-auto inline-block text-sm underline-offset-4 hover:underline">
+                                Forgot your password?
+                            </a>
+                        </div>
+                        <input formControlName="password" type="password" id="password" required hlmInput />
+                        @if (password.hasError('required') && password.touched) {
+                            <hlm-error>Password is required</hlm-error>
+                        }
+                    </div>
+                </div>
+        </div>
+
+        @if (errorMessage()) {
+            <hlm-error class="flex m-3 justify-center">{{ errorMessage() }}</hlm-error>
+        }
+
+        <div hlmCardFooter class="flex-col gap-2 mt-3">
+            <button hlmBtn type="submit" class="w-full">Login</button>
+            <a routerLink="/signup" class="text-base underline-offset-4 hover:underline">Create an account?</a>
+        </div>
+        </form>
+    </section>
+</div>

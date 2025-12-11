@@ -1,0 +1,133 @@
+<ng-template #snowEffect>
+  <div class="snow-ball-container absolute inset-0 pointer-events-none z-0 overflow-hidden">
+      <div class="snow-ball"></div>
+      <div class="snow-ball"></div>
+      <div class="snow-ball"></div>
+      <div class="snow-ball"></div>
+      <div class="snow-ball"></div>
+      <div class="snow-ball"></div>
+      <div class="snow-ball"></div>
+      <div class="snow-ball"></div>
+      <div class="snow-ball"></div>
+      <div class="snow-ball"></div>
+      <div class="snow-ball"></div>
+      <div class="snow-ball"></div>
+      <div class="snow-ball"></div>
+      <div class="snow-ball"></div>
+      <div class="snow-ball"></div>
+  </div>
+</ng-template>
+<app-navbar></app-navbar>
+<div class="flex h-screen w-full rounded-xl pt-15">
+    <div class="w-1/4 min-h-screen border-r border-[#d1d8d1] bg-[#f4f7f4] flex flex-col">
+    <div class="h-16 p-5 border-b border-[#d1d8d1] bg-[#eef2ee]">
+      <h2 class="font-bold text-xl text-[#2c4c3b] tracking-wide">Messages</h2>
+    </div>
+    
+    <div class="flex-1 overflow-y-auto">
+      <ul class="flex flex-col">
+        @for(partner of partners(); track partner.user_id) {
+          <li>
+            <button 
+              (click)="onSelectPartner(partner)"
+              class="w-full p-4 flex items-center gap-5 hover:bg-[#e2e8e2] transition-colors border-b border-[#e2e8e2]"
+              [class.bg-[#dcead9]]="selectedPartner()?.user_id === partner.user_id"
+              [class.border-l-4]="selectedPartner()?.user_id === partner.user_id"
+              [class.border-l-[#2c4c3b]]="selectedPartner()?.user_id === partner.user_id"
+              [class.border-l-transparent]="selectedPartner()?.user_id !== partner.user_id"
+            >
+              <hlm-avatar variant="medium">
+                <img src="/catProfile1.jpg" alt="avatar" hlmAvatarImage />
+              </hlm-avatar>
+              <div class="flex-1 text-left overflow-hidden">
+                <p class="font-semibold truncate">{{ partner.email }}</p>
+                <p class="text-xs truncate font-sans">Click to view conversation</p>
+              </div>
+            </button>
+          </li>
+        }
+        @if (partners().length === 0) {
+            <div class="p-8 text-center text-[#5f7a6b]">
+                <p>No partners found.</p>
+            </div>
+        }
+      </ul>
+    </div>
+  </div>
+
+  <!-- Chat Box -->
+  <div class="flex-1 flex flex-col bg-[#fdfbf7]">
+    <ng-container *ngTemplateOutlet="snowEffect"></ng-container>
+    @if (selectedPartner(); as partner) {
+      <div class="h-16 p-3 border-b border-[#d1d8d1] flex items-center justify-between bg-[#fdfbf7] shadow-sm z-10">
+        <div class="flex items-center gap-3">
+          <hlm-avatar variant="medium">
+            <img src="/catProfile1.jpg" alt="avatar" hlmAvatarImage />
+            <span class="bg-[#4a6b47] text-[#fdfbf7]" hlmAvatarFallback>{{partner.email.charAt(0).toUpperCase()}}</span>
+          </hlm-avatar>
+          <div>
+            <h3 class="font-bold text-[#2c4c3b]">{{ partner.email }}</h3>
+            <div class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-[#6b8c68] animate-pulse"></span>
+                <span class="text-xs text-[#5f7a6b] font-medium font-sans">Online</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div #msgContainer class="flex-1 overflow-y-auto p-6 space-y-4 bg-[#f4f1ea]">
+        @if (currentUserId(); as userId) {
+            @for (message of messages(); track message.id) {
+              <app-chat-message 
+              [currentUserId]="userId"
+              [chatMessage]="message"
+              ></app-chat-message>
+            }
+            @if (messages().length === 0) {
+                <div class="h-full flex flex-col items-center justify-center text-[#8a9e8a]">
+                    <p class="font-serif italic">No messages yet.</p>
+                </div>
+            }
+        }
+      </div>
+
+      <!-- Input Area -->
+      <div class="p-4 bg-[#fdfbf7] border-t border-[#d1d8d1]">
+        <div class="flex items-center gap-2 bg-[#f4f7f4] rounded-full px-4 py-2 border border-[#d1d8d1] focus-within:border-[#2c4c3b] focus-within:bg-white transition-all shadow-inner">
+          <form class="flex w-full" [formGroup]="chatForm" (ngSubmit)="onSubmitNewMessage()">
+            <input 
+              id="new-chat-message"
+              type="text" 
+              placeholder="Type your message..." 
+              class="flex-1 bg-transparent border-none focus:ring-0 text-sm py-2 outline-none text-[#2c4c3b] placeholder-[#8a9e8a] font-sans"
+              formControlName="chat_message"
+            />
+            <button 
+              [disabled]="chatForm.invalid"
+              class="p-2 rounded-full bg-[#2c4c3b] text-[#fdfbf7] hover:bg-[#1e3629] cursor-pointer transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                    <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
+                </svg>
+            </button>
+          </form>    
+          
+        </div>
+      </div>
+
+    } @else {
+      <!-- Empty State -->
+      <div class="flex-1 flex flex-col items-center justify-center text-[#5f7a6b] bg-[#f4f1ea]">
+        <div class="w-24 h-24 bg-[#e8efe8] rounded-full flex items-center justify-center mb-4 border border-[#d1d8d1]">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-[#4a6b47]">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.159 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+            </svg>
+        </div>
+        <h3 class="text-lg font-bold text-[#2c4c3b] font-serif">Your Messages</h3>
+        <p class="text-sm font-sans">Select a chat to start messaging</p>
+      </div>
+    }
+  </div>
+</div>
+

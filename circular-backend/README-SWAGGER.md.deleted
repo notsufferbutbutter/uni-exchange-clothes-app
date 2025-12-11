@@ -1,0 +1,2 @@
+This file is kept as a backup copy of the removed README-SWAGGER.md. The original Swagger/OpenAPI integration was intentionally removed from the project to avoid runtime conflicts. If you need the original contents, review this backup or revert the change in git.
+

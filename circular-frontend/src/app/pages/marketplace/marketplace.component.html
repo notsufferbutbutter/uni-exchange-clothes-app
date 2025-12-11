@@ -1,0 +1,25 @@
+<app-navbar />
+
+<h2 class="text-3xl font-bold text-center">MARKETPLACE</h2>
+
+
+    <main class="pt-20 px-4">
+
+<hlm-autocomplete
+  class="mt-10 mb-10"
+  [filteredOptions]="filteredOptions()"
+  [(search)]="search"
+  searchPlaceholderText="Want to look for something?"
+  [transformOptionToString]="transformOptionToString"
+  [transformOptionToValue]="transformOptionToString"
+  [requireSelection]="false"
+></hlm-autocomplete>
+
+<div
+  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+>
+  @for (item of filteredOptions(); track item.id) {
+    <app-marketplace-item [item]="item"></app-marketplace-item>
+  }
+</div>
+</main>
