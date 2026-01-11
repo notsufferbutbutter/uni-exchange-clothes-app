@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { provideIcons } from '@ng-icons/core';
 import {
@@ -15,6 +15,8 @@ import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmIconImports } from '@spartan-ng/helm/icon';
 import { HlmNavigationMenuImports } from '@spartan-ng/helm/navigation-menu';
 import { AuthService } from '../../services/auth.service';
+import { ChatService } from '../../services/chat.service';
+import { UserService } from '../../services/user.service';
 
 
 @Component({
@@ -100,7 +102,21 @@ export class NavbarComponent {
   ];
 
   protected readonly authService = inject(AuthService);
+  protected readonly chatService = inject(ChatService);
+  protected readonly userService = inject(UserService);
+  private currentUser = computed(() => this.userService.currentProfileUser());
   router = inject(Router)
+  unreadMessages = this.chatService.unreadMessages;
+
+  constructor() {
+    effect(() => {
+      const currentUser = this.currentUser();
+      currentUser 
+        ? this.chatService.countUnreadMessages(currentUser.user_id)
+        : this.unreadMessages.set(0);
+    });
+  }
+
 
   //todo: should navigate to landing page: /
   onLogOut() {

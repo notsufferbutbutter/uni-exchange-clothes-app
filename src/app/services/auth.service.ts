@@ -1,6 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { supabase } from '../supabase/superbase-client';
 import { UserService } from './user.service';
+import { ChatService } from './chat.service';
 
 
 @Injectable({

@@ -10,6 +10,50 @@ import { UserService } from "./user.service";
 })
 export class ChatService {
     userService = inject(UserService);
+    unreadMessages = signal<number>(0);
+
+    async countUnreadMessages(currentUserId: string | undefined) {
+      const { count, error } = await supabase
+        .from('chats')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_read', false)
+        .eq('receiver_id', currentUserId);
+
+      if (error) {
+        console.error('Failed to count unread messages:', error);
+        return 0;
+      }
+
+      if (count) {
+        this.unreadMessages.set(count);
+        
+      } else {
+        this.unreadMessages.set(0);
+      }
+
+      console.log('Unread updated to:', count);
+
+      return;
+    }
+
+
+    async markMessagesAsRead(currentUserId: string | undefined, currentPartnerId: string) {
+      const { data, error } = await supabase
+        .from('chats')          
+        .update({ is_read: true })
+        .eq('receiver_id', currentUserId)
+        .eq('sender_id', currentPartnerId)
+        .eq('is_read', false);
+
+      if (error) {
+        console.error('Failed to mark messages as read:', error);
+      }
+
+      this.countUnreadMessages(currentUserId);
+
+      return data;
+    }
+
 
     async loadAllPartnersOfCurrentUser(currentUserId: string): Promise<User[]> {
       const { error, data } = await supabase

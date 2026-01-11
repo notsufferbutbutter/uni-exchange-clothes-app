@@ -51,6 +51,7 @@ export class ChatComponent implements AfterViewInit {
           'postgres_changes',
           { event: 'INSERT', schema: 'public', table: 'chats' },
           (payload) => {
+            //update messages
             const newMessage = payload.new as ChatMessage;
     
             const currentPartner = this.selectedPartner();
@@ -65,6 +66,9 @@ export class ChatComponent implements AfterViewInit {
             if (isRelevant) {
               this.messages.update(current => [...current, newMessage]);
             }
+
+            //update count unread messages
+            this.chatService.countUnreadMessages(this.currentUserId());
           }
         )
         .subscribe();
@@ -108,6 +112,7 @@ export class ChatComponent implements AfterViewInit {
 
   onSelectPartner(partner: User) {
     this.selectedPartner.set(partner);
+    this.chatService.markMessagesAsRead(this.currentUserId(), partner.user_id);
   }
 
   onSubmitNewMessage() {

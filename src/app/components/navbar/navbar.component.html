@@ -61,9 +61,20 @@
       </li>
 
       <li hlmNavigationMenuItem>
-        <a hlmNavigationMenuLink routerLink="/chat"
-          >NACHRICHTEN</a
-        >
+        
+        <div class="relative inline-block">
+          <a hlmNavigationMenuLink routerLink="/chat">
+            NACHRICHTEN
+          </a>
+        </div>
+        
+        @if (unreadMessages() >= 0) {
+          <span class="absolute min-w-[18px] h-[18px] bg-red-600 
+          text-white text-[11px] rounded-full flex 
+          items-center right-0 top-0 justify-center">
+            {{ unreadMessages() > 99 ? '+99' : unreadMessages() }}
+          </span>
+        }
       </li>
 
       <li hlmNavigationMenuItem>
