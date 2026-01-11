@@ -13,8 +13,8 @@ export class TradeRequestService {
       .insert({
         requester_id: request.requesterId,
         receiver_id: request.receiverId,
-        requested_article_id: request.requestedArticleId,
-        offered_article_ids: request.offeredArticleIds,
+        requested_item_id: request.requestedArticleId,
+        offered_item_ids: request.offeredArticleIds,
         message: request.message,
         status: 'PENDING',
         created_at: new Date().toISOString()
@@ -82,7 +82,7 @@ export class TradeRequestService {
       .from('trade_requests')
       .select('*')
       .eq('status', 'PENDING')
-      .or(`requested_article_id.in.(${itemIds.join(',')}),offered_article_ids.cs.{${itemIds.join(',')}}`);
+      .or(`requested_item_id.in.(${itemIds.join(',')}),offered_item_ids.cs.{${itemIds.join(',')}}`);
 
     if (error || !data) {
       console.error('Failed to load trade requests by item IDs:', error);
@@ -114,8 +114,8 @@ export class TradeRequestService {
       id: data.id,
       requesterId: data.requester_id,
       receiverId: data.receiver_id,
-      requestedArticleId: data.requested_article_id,
-      offeredArticleIds: data.offered_article_ids || [],
+      requestedArticleId: data.requested_item_id,
+      offeredArticleIds: data.offered_item_ids || [],
       message: data.message || '',
       status: data.status,
       createdAt: data.created_at,
