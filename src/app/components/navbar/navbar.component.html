@@ -68,7 +68,7 @@
           </a>
         </div>
         
-        @if (unreadMessages() >= 0) {
+        @if (unreadMessages() > 0) {
           <span class="absolute min-w-[18px] h-[18px] bg-red-600 
           text-white text-[11px] rounded-full flex 
           items-center right-0 top-0 justify-center">
@@ -96,46 +96,28 @@
 
         <div hlmNavigationMenuContent *brnNavigationMenuContent>
           <ul class="flex-row">
-            @for (component of _settingComponents; track $index) {
+             <li>
+                <a hlmNavigationMenuLink routerLink="/profile">
+                  <div class="text-sm leading-none font-medium">
+                    Profile
+                  </div>
+                </a>
+              </li>
               <li>
-                @if (component.action === 'logout') {
                   <a hlmNavigationMenuLink (click)="onLogOut()">
                     <div class="text-sm leading-none font-medium">
-                      {{ component.title }}
+                      Abmelden
                       <ng-icon
-                        [name]="component.iconName"
-                        [class]="component.iconClass"
+                        name=lucideLogOut
+                        class="relative top-[2px] ml-1 size-3"
                       />
                     </div>
                   </a>
-                }
-                @else {
-                  <a hlmNavigationMenuLink [routerLink]="component.href">
-                    <div class="text-sm leading-none font-medium">
-                      {{ component.title }}
-                      <ng-icon
-                        [name]="component.iconName"
-                        [class]="component.iconClass"
-                      />
-                    </div>
-                  </a>
-                }
               </li>
-            }
           </ul>
         </div>
       </li>
       }
-
-      <!-- @if (!authService.isLoggedIn()) {
-        <li hlmNavigationMenuItem>
-          <a hlmNavigationMenuLink href="/documentation/introduction">DOCS</a>
-        </li>
-
-        <li hlmNavigationMenuItem>
-          <a hlmNavigationMenuLink href="/documentation/introduction">ABOUT US</a>
-        </li> -->
-      <!-- } -->
   </ul>
 
   @if (!authService.isLoggedIn()) {

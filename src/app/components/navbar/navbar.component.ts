@@ -80,27 +80,6 @@ export class NavbarComponent {
     },
   ];
 
-  protected readonly _settingComponents = [
-    {
-      title: 'Profile',
-      href: '/components/alert-dialog',
-      iconName: '',
-      iconClass: '',
-    },
-    {
-      title: 'Docs',
-      href: '/components/hover-card',
-      iconName: '',
-      iconClass: '',
-    },
-    {
-      title: 'Abmelden',
-      action: 'logout',
-      iconName: 'lucideLogOut',
-      iconClass: 'relative top-[2px] ml-1 size-3',
-    },
-  ];
-
   protected readonly authService = inject(AuthService);
   protected readonly chatService = inject(ChatService);
   protected readonly userService = inject(UserService);
