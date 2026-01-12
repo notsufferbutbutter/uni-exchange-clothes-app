@@ -1,0 +1,39 @@
+<app-navbar />
+<div class="px-6 md:px-20 py-10 md:py-20 flex justify-center">
+    <form class="bg-white px-6 md:px-10 py-8 w-full max-w-2xl rounded-xl border border-gray-200 shadow-sm space-y-6" [formGroup]="form" (ngSubmit)="submit()">
+        <div hlmFieldGroup>
+            <fieldset hlmFieldSet>
+                <legend hlmFieldLegend class="pb-2 text-xl font-semibold">Profile</legend>
+                <p class="text-gray-500 text-sm pb-5">Update your personal information. Changes are saved to your account.</p>
+                <div hlmFieldGroup class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div hlmField>
+                        <label hlmFieldLabel for="username">Username<span class="text-red-500">*</span></label>
+                        <input hlmInput id="username" name="username" autocomplete="username" formControlName="username" placeholder="Username">
+                    </div>
+                    <div hlmField class="md:col-span-1">
+                        <label hlmFieldLabel for="email">Email<span class="text-red-500">*</span></label>
+                        <input hlmInput id="email" name="email" type="email" autocomplete="email" formControlName="email" placeholder="Email">
+                    </div>
+                    <div hlmField>
+                        <label hlmFieldLabel for="city">City</label>
+                        <input hlmInput id="city" name="city" autocomplete="address-level2" formControlName="location_city" placeholder="City" />
+                    </div>
+                    <div hlmField>
+                        <label hlmFieldLabel for="country">Country</label>
+                        <input hlmInput id="country" name="country" autocomplete="country-name" formControlName="location_country" placeholder="Country" />
+                    </div>
+
+                    <div hlmField class="md:col-span-2">
+                        <label hlmFieldLabel for="bio">Bio</label>
+                        <textarea hlmInput id="bio" name="bio" class="w-full h-28" formControlName="bio" placeholder="Tell us about you"></textarea>
+                    </div> 
+                </div>
+            
+            </fieldset>
+
+            <div class="flex items-center justify-end gap-3 pt-2">
+                <button hlmBtn type="submit" [disabled]="form.invalid || isSaving">{{ isSaving ? 'Saving…' : 'Save changes' }}</button>
+            </div>
+        </div>
+    </form>
+</div>

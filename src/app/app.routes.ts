@@ -8,6 +8,7 @@ import { MarketplaceComponent } from './pages/marketplace/marketplace.component'
 import { FavoritesComponent } from './pages/favorites/favorites.component';
 import { ChatComponent } from './pages/chat/chat.component';
 import { TauschangebotComponent } from './pages/tauschangebot/tauschangebot.component';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -19,5 +20,5 @@ export const routes: Routes = [
   { path: 'favorites', component: FavoritesComponent},
   { path: 'chat', component: ChatComponent},
   { path: 'tauschangebot', component: TauschangebotComponent},
-
+ { path: 'profile', component: ProfileComponent}
 ];
