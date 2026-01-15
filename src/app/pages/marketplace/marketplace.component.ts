@@ -6,6 +6,7 @@ import { MarketplaceItemComponent } from './marketplace-item/marketplace-item.co
 import { ItemService } from '../../services/items.service';
 import { UserService } from '../../services/user.service';
 import { ActivatedRoute } from '@angular/router';
+import { CategoryService } from '../../services/category.service';
 
 @Component({
   selector: 'app-marketplace',
@@ -13,11 +14,12 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './marketplace.component.html',
 })
 export class MarketplaceComponent {
+  readonly categoryService = inject(CategoryService);
   readonly itemService = inject(ItemService);
   readonly _items = signal<Item[]>([]);
   readonly userService = inject(UserService);
   readonly route = inject(ActivatedRoute);
-  readonly categoryFilter = signal<string | null>(null);
+  readonly categoryFilter = signal<string|null>("");
 
   constructor() {
     effect(async() => {
@@ -29,9 +31,11 @@ export class MarketplaceComponent {
 
     // Listen to query params for category filter
     effect(() => {
-      this.route.queryParams.subscribe(params => {
-        this.categoryFilter.set(params['category'] || null);
+      const subscription = this.categoryService.selectedCategory$.subscribe((category) => {
+        this.categoryFilter.set(category);
       });
+
+      return () => subscription.unsubscribe();
     });
   }
 

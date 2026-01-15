@@ -33,7 +33,7 @@
           class="grid gap-2 sm:w-[100px] md:w-[200px] md:grid-cols-2 lg:w-[300px]"
         >
           @for (component of _entdeckenComponents; track component.title) {
-            <li>
+            <li (click)="onSelectedCategory(component.category)">
               <a hlmNavigationMenuLink [routerLink]="component.href">
                 <div class="text-sm leading-none font-medium">
                   {{ component.title }}

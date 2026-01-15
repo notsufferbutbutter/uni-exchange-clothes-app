@@ -17,6 +17,7 @@ import { HlmNavigationMenuImports } from '@spartan-ng/helm/navigation-menu';
 import { AuthService } from '../../services/auth.service';
 import { ChatService } from '../../services/chat.service';
 import { UserService } from '../../services/user.service';
+import { CategoryService } from '../../services/category.service';
 
 
 @Component({
@@ -47,39 +48,48 @@ export class NavbarComponent {
   protected readonly _entdeckenComponents = [
     {
       title: 'Alle Produkte',
+      category: '',
       href: '/marketplace',
     },
     {
       title: 'Jacken',
+      category: 'Jacken',
       href: '/marketplace',
     },
     {
       title: 'Hosen',
+      category: 'Hosen',
       href: '/marketplace',
     },
     {
       title: 'Hemden',
+      category: 'Hemden',
       href: '/marketplace',
     },
     {
       title: 'Hoodies',
+      category: 'Hoodies',
       href: '/marketplace',
     },
     {
       title: 'Shorts',
+      category: 'Shorts',
       href: '/marketplace',
     },
 
     {
       title: 'T-Shirts',
+      category: 'T-Shirts',
       href: '/marketplace',
     },
     {
       title: 'Kleider',
+      category: 'Kleider',
       href: '/marketplace',
     },
   ];
 
+  protected readonly categoryService = inject(CategoryService);
   protected readonly authService = inject(AuthService);
   protected readonly chatService = inject(ChatService);
   protected readonly userService = inject(UserService);
@@ -101,5 +111,9 @@ export class NavbarComponent {
   onLogOut() {
     this.router.navigate(['/']);
     this.authService.logout();
+  }
+
+  onSelectedCategory(category: string) {
+    this.categoryService.updateCategory(category);
   }
 }
